@@ -22,6 +22,15 @@ class Storage(object):
         )
         self.__engine = create_engine(url_object)
     
+    def all(self, cls=None):
+        objs = {}
+        if cls is not None:
+            for obj in self.__session.query(cls):
+                objs[obj.id] = obj
+        else:
+            pass
+        return objs
+    
     def new(self, obj):
         self.__session.add(obj)
     
@@ -30,6 +39,7 @@ class Storage(object):
     
     def delete(self, obj):
         self.__session.delete(obj)
+        self.__session.commit()
     
     def close(self):
         self.__session.close()
