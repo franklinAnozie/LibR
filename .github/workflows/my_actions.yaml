@@ -32,7 +32,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: install dependencies
         run: |
-            source new_venv/bin/activate,
+            source new_venv/bin/activate
             pip3 install -r requirements.txt
       
       - name: run linter
