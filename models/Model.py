@@ -237,7 +237,7 @@ class Books(Model, Base):
     title = Column(String(256))
     author = Column(String(256))
     publisher = Column(String(256))
-    ISBN_Number = Column(Integer)
+    ISBN_Number = Column(String(256))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
