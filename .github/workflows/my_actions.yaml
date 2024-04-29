@@ -36,5 +36,5 @@ jobs:
             source new_venv/bin/activate
             pip3 install -r requirements.txt
       - name: run linter
-        run: pycodestyle .
+        run: find . -type d ! -path "./new_venv/*" -exec pycodestyle {} \;
     
