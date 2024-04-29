@@ -58,7 +58,7 @@ class Customer(Users, Base):
     user_name = Column(String(256))
     password = Column(String(256))
     fine = Column(Integer)
-    borrowed_books = relationship("Book", secondary='customer_books')
+    borrowed_books = relationship("Books", secondary='customer_books')
     role = Column(String(60))
 
     __limit = 3
@@ -75,35 +75,54 @@ class Customer(Users, Base):
     def borrow_book(self, book_id):
         lst = self.borrowed_books
         if len(lst) < self.__limit or lst is None:
-            self.borrowed_books.append(book_id)
-            models.storage.save()
-            return True
+            specific_book = models.storage.get(Books, book_id)
+            if specific_book is not None:
+                self.borrowed_books.append(specific_book)
+                models.storage.save()
+                print("Book borrowed successfully!!")
+                return True
+            else:
+                print("Error: Book not found!")
+                return False
         else:
+            print("Error: Can't borrow another book, Limit reached!!")
             return False
 
     def return_book(self, book_id):
-        self.borrowed_books.delete(book_id)
+        specific_book = models.storage.get(Books, book_id)
+        if specific_book is not None:
+            self.borrowed_books.remove(specific_book)
         models.storage.save()
         return True
 
     def pay_fine(self, amount):
-        all_customers = models.storage.all(Customer)
-        for key, value in all_customers.items():
-            if key == self.id:
-                paid_fine = value["fine"] - amount
-                self.fine = paid_fine
-                models.storage.save()
+        if self.fine is not None:
+            self.fine -= amount
+            models.storage.save()
+            return True
+        else:
+            print("You don't owe any fines")
+            return False
 
     def delete_account(self):
-        models.storage.delete(self)
+        if self.get_num_of_borrowed > 0:
+            print("Can't delete account, until books are returned!")
+            return False
+        else:
+            models.storage.delete(self)
+            models.storage.save()
+            print("account deleted successfully")
+            return True
 
     def update_account(self, update_details):
-        for key, value in update_details:
-            self[key] = value
+        update_details["updated_at"] = datetime.now()
+        for key, value in update_details.items():
+            setattr(self, key, value)
         models.storage.save()
 
     def fine_customer(self, fine):
         self.fine = fine
+        models.storage.save()
 
 
 class Staff(Users, Base):
@@ -129,42 +148,49 @@ class Staff(Users, Base):
         if user_data["role"] == "Customer":
             new_customer = Customer(**user_data)
             new_customer.save()
+            return new_customer
 
-    def delete_user(self, user_id):
-        all_users = models.storage.all(Customer)
-        for key, value in all_users.items():
-            if key == user_id:
-                value.delete()
-                break
+    def delete_user(self, **user_details):
+        specific_user = None
+        if user_details["role"] == "Customer":
+            specific_user = models.storage.get(Customer, user_details["id"])
+        if specific_user is not None:
+            if specific_user.get_num_of_borrowed() == 0:
+                specific_user.delete()
+                return True
+            else:
+                print("Account can't be deleted, User borrowed a book")
+        else:
+            print("Error: Can't delete user!!")
+            return False
 
-    def fine_user(self, **kwargs):
-        fine = kwargs["fine"]
-        all_users = models.storage.all(Customer)
-        for key, value in all_users.items():
-            if key == kwargs["user_id"]:
-                value.fine_customer(fine)
-                models.storage.save()
-                break
+    def fine_user(self, **user_details):
+        user = models.storage.get(Customer, user_details["id"])
+        user.fine_customer(user_details["fine"])
 
     def add_book(self, **book_details):
         new_book = Books(**book_details)
         new_book.save()
 
     def remove_book(self, book_id):
-        all_books = models.storage.all(Books)
-        for key, value in all_books.items():
-            if key == book_id:
-                value.delete()
-                break
+        specific_book = models.storage.get(Books, book_id)
+        if specific_book is not None:
+            all_borrowed = models.storage.all(CustomerBook)
+            for each_book in all_borrowed.values():
+                if each_book.book_id == specific_book.id:
+                    print("Can't delete book, it's currently being borrowed")
+                    return False
+            specific_book.delete()
+            return True
+        else:
+            print("Book not found")
+            return False
 
     def update_book(self, **book_details):
-        all_books = models.storage.all(Books)
-        for key, value in all_books.items():
-            if key == book_details["id"]:
-                for key in book_details:
-                    setattr(value, key, book_details[key])
-                value.update_book()
-                break
+        specific_book = models.storage.get(Books, book_details["id"])
+        book_details["updated_at"] = datetime.now()
+        specific_book.update_details(**book_details)
+        return True
 
 
 class Admin(Staff):
@@ -182,25 +208,22 @@ class Admin(Staff):
             new_customer = Customer(**user_data)
             new_customer.save()
 
-    def delete_user(self, **kwargs):
-        if kwargs["role"] == "Admin":
-            all_users = models.storage.all(Admin)
-            for key, value in all_users.items():
-                if key == kwargs["id"]:
-                    value.delete()
-                    break
-        elif kwargs["role"] == "Staff":
-            all_users = models.storage.all(Staff)
-            for key, value in all_users.items():
-                if key == kwargs["id"]:
-                    value.delete()
-                    break
+    def delete_user(self, **user_details):
+        specific_user = None
+        if user_details["role"] == "Admin":
+            specific_user = models.storage.get(Admin, user_details["id"])
+        elif user_details["role"] == "Staff":
+            specific_user = models.storage.get(Staff, user_details["id"])
         else:
-            all_users = models.storage.all(Customer)
-            for key, value in all_users.items():
-                if key == kwargs["id"]:
-                    value.delete()
-                    break
+            specific_user = models.storage.get(Customer, user_details["id"])
+            if specific_user.get_num_of_borrowed() > 0:
+                print("Account can't be deleted, User borrowed a book")
+                return False
+        if specific_user is not None:
+            specific_user.delete()
+        else:
+            print("Error: Can't delete user!!")
+            return False
 
 
 class Books(Model, Base):
@@ -219,7 +242,14 @@ class Books(Model, Base):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def update_book(self, ):
+    def delete_book(self):
+        models.storage.delete(self)
+        models.storage.save()
+        print("book deleted successfully")
+
+    def update_details(self, **book_details):
+        for key, value in book_details.items():
+            setattr(self, key, value)
         models.storage.save()
 
 
@@ -229,5 +259,5 @@ class CustomerBook(Base):
     __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'latin1'}
 
     id = Column(Integer, primary_key=True)
-    customer_id = Column(Integer, ForeignKey('customers.id'))
-    book_id = Column(Integer, ForeignKey('books.id'))
+    customer_id = Column(String(256), ForeignKey('customers.id'))
+    book_id = Column(String(256), ForeignKey('books.id'))

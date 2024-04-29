@@ -32,6 +32,17 @@ class Storage(object):
             pass
         return objs
 
+    def get(self, cls, id):
+        objs = None
+        all_members = None
+        if cls is not None and id is not None:
+            all_members = self.all(cls)
+        if all_members is not None:
+            for key, value in all_members.items():
+                if key == id:
+                    objs = value
+        return objs
+
     def new(self, obj):
         self.__session.add(obj)
 
