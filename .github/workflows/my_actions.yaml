@@ -37,5 +37,10 @@ jobs:
             sudo npm install semistandard --global
        ##     source new_venv/bin/activate
        ##     pip3 install -r requirements.txt
+
       - name: run python linter
         run: pycodestyle .
+
+      - name: run javascript linter
+        run: semistandard .
+    
