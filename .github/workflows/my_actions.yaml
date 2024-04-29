@@ -33,8 +33,13 @@ jobs:
       - name: install dependencies
         run: |
             sudo apt-get install pycodestyle
+            sudo apt-get install -y nodejs npm
+            sudo npm install semistandard --global
        ##     source new_venv/bin/activate
        ##     pip3 install -r requirements.txt
-      - name: run linter
+      - name: run python linter
         run: pycodestyle .
+      
+      - name: run javascript linter
+      - name: semistandard .
     
