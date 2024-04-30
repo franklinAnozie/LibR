@@ -18,11 +18,11 @@ $(document).ready(function () {
       bookHtml += '<p>Author: ' + author + '</p>';
       bookHtml += '<button class="borrow-btn">Borrow</button>';
       bookHtml += '</div>';
-    
+
       $('#books').append(bookHtml);
     });
 
-    $('.borrow-btn').click(function() {
+    $('.borrow-btn').click(function () {
       // Perform borrowing action here
       alert('Borrowing book');
     });
