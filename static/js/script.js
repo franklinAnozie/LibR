@@ -16,9 +16,15 @@ $(document).ready(function () {
       bookHtml += '<h2>' + title + '</h2>';
       bookHtml += '<img src="' + coverUrl + '" alt="' + title + '">';
       bookHtml += '<p>Author: ' + author + '</p>';
+      bookHtml += '<button class="borrow-btn">Borrow</button>';
       bookHtml += '</div>';
-
+    
       $('#books').append(bookHtml);
+    });
+
+    $('.borrow-btn').click(function() {
+      // Perform borrowing action here
+      alert('Borrowing book');
     });
   });
 });
