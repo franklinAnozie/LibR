@@ -19,7 +19,7 @@ class Storage(object):
             username=getenv("DB_USERNAME"),
             password=getenv("DB_PASSWORD"),
             host=getenv("DB_HOST"),
-            database=getenv("DB_DATABASE"),
+            database=getenv("DB_DATABASE")
         )
         self.__engine = create_engine(url_object)
 
