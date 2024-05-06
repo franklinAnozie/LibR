@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!./new_env/bin/python3
 """ Views index page """
 
 from api.v1.routes import app_routes
@@ -18,13 +18,13 @@ classes = {
 }
 
 
-@app_routes.route("/status", methods=["GET"])
+@app_routes.route("/status", methods=["GET"], strict_slashes=False)
 def status():
     """ returns the status of the server """
     return jsonify({"status": "OK"})
 
 
-@app_routes.route("/stats", methods=["GET"])
+@app_routes.route("/stats", methods=["GET"], strict_slashes=False)
 def stats():
     """returns the stats of the server"""
     objs_count = {}
