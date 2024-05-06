@@ -30,7 +30,7 @@ class Model(object):
 
     def delete(self):
         models.storage.delete(self)
-    
+
     def update(self, update_details):
         update_details["updated_at"] = datetime.now()
         for key, value in update_details.items():
