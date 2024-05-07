@@ -108,7 +108,7 @@ class Customer(Users, Base):
         if self.fine is not None:
             self.fine -= amount
             self.save()
-            return True
+            return self.fine
         else:
             print("You don't owe any fines")
             return False
@@ -244,6 +244,8 @@ class Books(Model, Base):
     author = Column(String(256))
     publisher = Column(String(256))
     ISBN_Number = Column(String(256))
+    borrowed_by = relationship("Customer", secondary='customer_books',
+                               back_populates="borrowed_books", viewonly=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -251,6 +253,9 @@ class Books(Model, Base):
     def delete_book(self):
         models.storage.delete(self)
         print("book deleted successfully")
+
+    def get_borrowed_by(self):
+        return self.borrowed_by
 
 
 class CustomerBook(Base):
