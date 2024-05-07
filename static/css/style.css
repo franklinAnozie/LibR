@@ -199,29 +199,55 @@ footer {
 .about-container {
     max-width: 800px;
     margin: 20px auto;
-    /* Center the container horizontally */
     padding: 0 20px;
     text-align: center;
-    /* Center the text inside the container */
     backdrop-filter: blur(6px);
+    border-radius: 90px;
 }
 
 .about-container h2 {
     color: #ffffff;
-    font-size: 28px;
-    /* Increase font size */
+    font-size: 35px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    /* Add text shadow */
 }
 
 .about-container p {
     color: #ffffff;
     font-size: 18px;
-    /* Increase font size */
     line-height: 1.6;
     margin-bottom: 20px;
     text-align: left;
-    /* Reset text alignment for paragraphs */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    /* Add text shadow */
+}
+
+.info {
+    display: flex;
+    padding: 10px;
+    backdrop-filter: blur(2px);
+}
+
+.info1 {
+    flex: 1;
+    padding: 20px;
+    font-size: 24px;
+}
+
+.info1 img {
+    width: 900px;
+    border-radius: 20px;
+}
+
+.info2 {
+    flex: 1;
+    padding: 20px;
+    color: #ffffff;
+    font-size: 38px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 90px;
 }
