@@ -22,11 +22,20 @@ class Model(object):
             self.updated_at = datetime.now()
 
     def save(self):
-        models.storage.new(self)
         models.storage.save()
+
+    def new(self):
+        models.storage.new(self)
+        self.save()
 
     def delete(self):
         models.storage.delete(self)
+
+    def update(self, update_details):
+        update_details["updated_at"] = datetime.now()
+        for key, value in update_details.items():
+            setattr(self, key, value)
+        self.save()
 
 
 class Users(Model):
@@ -78,7 +87,7 @@ class Customer(Users, Base):
             specific_book = models.storage.get(Books, book_id)
             if specific_book is not None:
                 self.borrowed_books.append(specific_book)
-                models.storage.save()
+                self.save()
                 print("Book borrowed successfully!!")
                 return True
             else:
@@ -92,14 +101,14 @@ class Customer(Users, Base):
         specific_book = models.storage.get(Books, book_id)
         if specific_book is not None:
             self.borrowed_books.remove(specific_book)
-        models.storage.save()
+        self.save()
         return True
 
     def pay_fine(self, amount):
         if self.fine is not None:
             self.fine -= amount
-            models.storage.save()
-            return True
+            self.save()
+            return self.fine
         else:
             print("You don't owe any fines")
             return False
@@ -109,20 +118,16 @@ class Customer(Users, Base):
             print("Can't delete account, until books are returned!")
             return False
         else:
-            models.storage.delete(self)
-            models.storage.save()
+            self.delete()
             print("account deleted successfully")
             return True
 
     def update_account(self, update_details):
-        update_details["updated_at"] = datetime.now()
-        for key, value in update_details.items():
-            setattr(self, key, value)
-        models.storage.save()
+        self.update(update_details)
 
     def fine_customer(self, fine):
         self.fine = fine
-        models.storage.save()
+        self.save()
 
 
 class Staff(Users, Base):
@@ -147,6 +152,7 @@ class Staff(Users, Base):
         """ method to create a new user """
         if user_data["role"] == "Customer":
             new_customer = Customer(**user_data)
+            new_customer.new()
             new_customer.save()
             return new_customer
 
@@ -160,6 +166,7 @@ class Staff(Users, Base):
                 return True
             else:
                 print("Account can't be deleted, User borrowed a book")
+                return False
         else:
             print("Error: Can't delete user!!")
             return False
@@ -186,10 +193,9 @@ class Staff(Users, Base):
             print("Book not found")
             return False
 
-    def update_book(self, **book_details):
+    def update_book(self, book_details):
         specific_book = models.storage.get(Books, book_details["id"])
-        book_details["updated_at"] = datetime.now()
-        specific_book.update_details(**book_details)
+        specific_book.update(book_details)
         return True
 
 
@@ -238,19 +244,18 @@ class Books(Model, Base):
     author = Column(String(256))
     publisher = Column(String(256))
     ISBN_Number = Column(String(256))
+    borrowed_by = relationship("Customer", secondary='customer_books',
+                               back_populates="borrowed_books", viewonly=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def delete_book(self):
         models.storage.delete(self)
-        models.storage.save()
         print("book deleted successfully")
 
-    def update_details(self, **book_details):
-        for key, value in book_details.items():
-            setattr(self, key, value)
-        models.storage.save()
+    def get_borrowed_by(self):
+        return self.borrowed_by
 
 
 class CustomerBook(Base):
