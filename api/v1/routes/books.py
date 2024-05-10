@@ -5,6 +5,8 @@ from api.v1.routes import app_routes
 from flask import abort, jsonify, make_response, request
 from models import storage
 from models.Model import Books
+from models.Model import Customer
+from flask import session
 
 
 classes = {
@@ -84,3 +86,25 @@ def post_book():
             show_book[key] = value
 
     return make_response(jsonify(show_book), 201)
+
+
+@app_routes.route("/books/<book_id>/borrow/", methods=["POST"], strict_slashes=False)
+def borrow_book(book_id):
+    """Borrow a book."""
+    customer_id = session.get('user_id')
+    if not customer_id:
+        abort(400, description="Customer ID is required.")
+
+    book = storage.get(Books, book_id)
+    if not book:
+        abort(404, description="Book not found.")
+
+    customer = storage.get(Customer, customer_id)
+    if not customer:
+        abort(404, description="Customer not found.")
+
+    # Borrow the book
+    if customer.borrow_book(book_id):
+        return jsonify({"message": "Book borrowed successfully."}), 200
+    else:
+        return jsonify({"message": "Failed to borrow the book."}), 400

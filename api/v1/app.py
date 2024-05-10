@@ -5,8 +5,11 @@ from flask import Flask, jsonify, make_response
 from models import storage
 from api.v1.routes import app_routes
 from os import environ
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app)
 app.register_blueprint(app_routes)
 
 
