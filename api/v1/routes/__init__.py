@@ -1,6 +1,6 @@
 #!./new_env/bin/python3
 """ views init """
-from flask import Blueprint
+from flask import Blueprint, session
 
 
 url_prefix = "/api/v1"

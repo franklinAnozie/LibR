@@ -6,10 +6,17 @@ from models import storage
 from api.v1.routes import app_routes
 from os import environ
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+from flask import session
+
+load_dotenv()
 
 
 app = Flask(__name__)
 CORS(app)
+
+app.secret_key = os.getenv('SECRET_KEY')
 app.register_blueprint(app_routes)
 
 
@@ -22,6 +29,7 @@ def teardown_appcontext(exception):
 @app.errorhandler(404)
 def not_found(error):
     """ 404 error page """
+    print("Session from api/v1/app.py:", session)
     return make_response(jsonify({"error": "Not found"}), 404)
 
 
