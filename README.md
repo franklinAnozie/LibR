@@ -4,7 +4,7 @@
 
 Libr is a comprehensive library management system designed to streamline library operations, enhance user experience, and promote reading culture. With Libr, users can easily browse, borrow, and return books, while librarians can efficiently manage inventory and track lending activities.
 
-**Final Project Blog Article**: [Libr: Library Management](https://www.libr.com/blog)
+**Final Project Blog Article**: [Libr: Library Management](https://www.linkedin.com/pulse/reflecting-my-portfolio-project-journey-sphax-s-suote)
 
 ## Installation
 
