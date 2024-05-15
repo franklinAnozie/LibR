@@ -40,4 +40,4 @@ We welcome contributions from the community to improve Libr. To contribute, foll
 
 ## Licensing
 
-Libr is licensed under the MIT License. See the [LICENSE](https://github.com/franklinAnozie/LibR/landingPage/LICENSE) file for details.
+Libr is licensed under the MIT License. See the [LICENSE](https://github.com/franklinAnozie/LibR/blob/landingPage/LICENSE) file for details.
