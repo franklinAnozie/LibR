@@ -15,3 +15,29 @@ To install Libr on your system, follow these steps:
 3. Install dependencies
 4. Start the application
 - python3 -m api.v1.app
+
+## Usage
+Users:
+- Browse a library full of intresting books
+- Sign up for free
+- Viewing detailed information about each book
+- Borrow the books you like or return books you already borrowed
+
+  Librarians can access additional:
+- Adding new books to the catalog.
+- Managing user accounts and borrowing history.
+
+## Contributing
+
+We welcome contributions from the community to improve Libr. To contribute, follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/improvement`).
+3. Make your changes.
+4. Commit your changes (`git commit -am 'Add new feature'`).
+5. Push to the branch (`git push origin feature/improvement`).
+6. Create a new Pull Request.
+
+## Licensing
+
+Libr is licensed under the MIT License. See the [LICENSE](https://github.com/franklinAnozie/LibR/landingPage/LICENSE) file for details.
