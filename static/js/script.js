@@ -59,6 +59,32 @@ $(document).ready(function () {
         });
     });
 
+    // login
+  $('#login-btn').click(function(event) {
+    // Get username and password from input fields
+    event.preventDefault();
+    var username = $('#username').val();
+    var password = $('#password').val();
+
+    // Send POST request to Flask route
+    $.ajax({
+        url: '/login-post',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ username: username, password: password }),
+        success: function(response) {
+          // Handle success response from Flask
+          console.log('Login successful');
+          alert('You Logged in !');
+          // Optionally, redirect to another page
+          window.location.href = '/';
+        },
+        error: function(xhr, status, error) {
+          alert('Error: ' + xhr.responseText +" "+ status+" " + error);
+        }
+    });
+  });
+
     $('.dropMenu').click(function () {
       $(this).find('.Menu').toggle();
     });

@@ -87,7 +87,11 @@ def post_book():
     return make_response(jsonify(show_book), 201)
 
 
-@app_routes.route("/books/<book_id>/borrow/", methods=["POST"], strict_slashes=False)
+@app_routes.route(
+    "/books/<book_id>/borrow/",
+    methods=["POST"],
+    strict_slashes=False
+)
 def borrow(book_id):
     """Borrow a book."""
     customer_id = request.json.get('user_id')
