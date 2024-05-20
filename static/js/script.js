@@ -9,8 +9,8 @@ $(document).ready(function () {
       const title = book.title;
       const author = book.author;
       const bookId = book.id;
-      //const coverId = book.work.cover_id;
-      //const coverUrl = 'https://covers.openlibrary.org/b/id/' + coverId + '-L.jpg'; // Construct cover image URL
+      // const coverId = book.work.cover_id;
+      // const coverUrl = 'https://covers.openlibrary.org/b/id/' + coverId + '-L.jpg'; // Construct cover image URL
 
       // Create HTML elements for each book and append to #books div
       let bookHtml = '<div>';
@@ -24,7 +24,6 @@ $(document).ready(function () {
 
     $('.borrow').click(function () {
       const bookId = $(this).data('book-id');
-      console.log(bookId);
 
       // Fetch user ID from Flask endpoint
       fetch('/get_user_id')
@@ -35,8 +34,7 @@ $(document).ready(function () {
           return response.json();
         })
         .then(data => {
-          var userId = data.user_id;
-          console.log(userId);
+          const userId = data.user_id;
 
           // Make AJAX request to borrow the book
           $.ajax({
@@ -49,41 +47,39 @@ $(document).ready(function () {
               // You can perform additional actions after successfully borrowing the book
             },
             error: function (xhr, status, error) {
-              alert('Error: ' + xhr.responseText + " " + status + " " + error);
+              alert(`Error: ${xhr.responseText} ${status} ${error}`);
             }
           });
         })
         .catch(error => {
-          console.error('Error fetching user ID:', error);
           alert('Error fetching user ID: ' + error.message);
         });
     });
 
     // login
-  $('#login-btn').click(function(event) {
+    $('#login-btn').click(function (event) {
     // Get username and password from input fields
-    event.preventDefault();
-    var username = $('#username').val();
-    var password = $('#password').val();
+      event.preventDefault();
+      const username = $('#username').val();
+      const password = $('#password').val();
 
-    // Send POST request to Flask route
-    $.ajax({
+      // Send POST request to Flask route
+      $.ajax({
         url: '/login-post',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ username: username, password: password }),
-        success: function(response) {
+        data: JSON.stringify({ username, password }),
+        success: function (response) {
           // Handle success response from Flask
-          console.log('Login successful');
           alert('You Logged in !');
           // Optionally, redirect to another page
           window.location.href = '/';
         },
-        error: function(xhr, status, error) {
-          alert('Error: ' + xhr.responseText +" "+ status+" " + error);
+        error: function (xhr, status, error) {
+          alert(`Error: ${xhr.responseText} ${status} ${error}`);
         }
+      });
     });
-  });
 
     $('.dropMenu').click(function () {
       $(this).find('.Menu').toggle();
@@ -94,20 +90,19 @@ $(document).ready(function () {
       event.preventDefault();
 
       // Get form data
-      var first = $('#first').val();
-      var last = $('#last').val();
-      var email = $('#email').val();
-      var username = $('#username').val();
-      var password = $('#password').val();
+      const first = $('#first').val();
+      const last = $('#last').val();
+      const email = $('#email').val();
+      const username = $('#username').val();
+      const password = $('#password').val();
 
-      var formData = {
-        first: first,
-        last: last,
-        email: email,
-        username: username,
-        password: password
+      const formData = {
+        first,
+        last,
+        email,
+        username,
+        password
       };
-      console.log(formData);
       // Send POST request to Flask route
       $.ajax({
         url: '/signup',
@@ -116,14 +111,13 @@ $(document).ready(function () {
         data: JSON.stringify(formData),
         success: function (response) {
           // Handle success response from Flask
-          console.log('Signup successful');
           alert('Signup successful');
           // Optionally, redirect to another page
           window.location.href = '/login'; // Redirect to login page after signup
         },
         error: function (xhr, status, error) {
           // Handle error response from Flask
-          alert('Error: ' + xhr.responseText + " " + status + " " + error);
+          alert(`Error: ${xhr.responseText} ${status} ${error}`);
         }
       });
     });
