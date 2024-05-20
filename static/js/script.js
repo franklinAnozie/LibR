@@ -1,30 +1,125 @@
 /* eslint-disable no-undef */
 $(document).ready(function () {
-  const apiUrl = 'https://openlibrary.org/people/mekBot/books/want-to-read.json';
+  const apiUrl = 'http://localhost:5000/api/v1/books/';
 
   $.getJSON(apiUrl, function (data) {
-    const books = data.reading_log_entries;
+    const books = data;
 
     books.forEach(function (book) {
-      const title = book.work.title;
-      const author = book.work.author_names.join(', '); // If there are multiple authors
-      const coverId = book.work.cover_id;
-      const coverUrl = 'https://covers.openlibrary.org/b/id/' + coverId + '-L.jpg'; // Construct cover image URL
+      const title = book.title;
+      const author = book.author;
+      const bookId = book.id;
+      // const coverId = book.work.cover_id;
+      // const coverUrl = 'https://covers.openlibrary.org/b/id/' + coverId + '-L.jpg'; // Construct cover image URL
 
       // Create HTML elements for each book and append to #books div
       let bookHtml = '<div>';
-      bookHtml += '<h2>' + title + '</h2>';
-      bookHtml += '<img src="' + coverUrl + '" alt="' + title + '">';
+      bookHtml += '<img src="../static/images/book.gif" alt="' + title + '">';
       bookHtml += '<p>Author: ' + author + '</p>';
-      bookHtml += '<button class="borrow-btn">Borrow</button>';
+      bookHtml += '<button class="borrow borrow-btn" data-book-id="' + bookId + '">Borrow</button>';
       bookHtml += '</div>';
 
       $('#books').append(bookHtml);
     });
 
-    $('.borrow-btn').click(function () {
-      // Perform borrowing action here
-      alert('Borrowing book');
+    $('.borrow').click(function () {
+      const bookId = $(this).data('book-id');
+
+      // Fetch user ID from Flask endpoint
+      fetch('/get_user_id')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user ID');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const userId = data.user_id;
+
+          // Make AJAX request to borrow the book
+          $.ajax({
+            url: 'http://localhost:5000/api/v1/books/' + bookId + '/borrow/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ user_id: userId }),
+            success: function (response) {
+              alert(response.message);
+              // You can perform additional actions after successfully borrowing the book
+            },
+            error: function (xhr, status, error) {
+              alert(`Error: ${xhr.responseText} ${status} ${error}`);
+            }
+          });
+        })
+        .catch(error => {
+          alert('Error fetching user ID: ' + error.message);
+        });
+    });
+
+    // login
+    $('#login-btn').click(function (event) {
+    // Get username and password from input fields
+      event.preventDefault();
+      const username = $('#username').val();
+      const password = $('#password').val();
+
+      // Send POST request to Flask route
+      $.ajax({
+        url: '/login-post',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ username, password }),
+        success: function (response) {
+          // Handle success response from Flask
+          alert('You Logged in !');
+          // Optionally, redirect to another page
+          window.location.href = '/';
+        },
+        error: function (xhr, status, error) {
+          alert(`Error: ${xhr.responseText} ${status} ${error}`);
+        }
+      });
+    });
+
+    $('.dropMenu').click(function () {
+      $(this).find('.Menu').toggle();
+    });
+
+    $('#signup-btn').click(function (event) {
+      // Prevent the default form submission
+      event.preventDefault();
+
+      // Get form data
+      const first = $('#first').val();
+      const last = $('#last').val();
+      const email = $('#email').val();
+      const username = $('#username').val();
+      const password = $('#password').val();
+
+      const formData = {
+        first,
+        last,
+        email,
+        username,
+        password
+      };
+      // Send POST request to Flask route
+      $.ajax({
+        url: '/signup',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function (response) {
+          // Handle success response from Flask
+          alert('Signup successful');
+          // Optionally, redirect to another page
+          window.location.href = '/login'; // Redirect to login page after signup
+        },
+        error: function (xhr, status, error) {
+          // Handle error response from Flask
+          alert(`Error: ${xhr.responseText} ${status} ${error}`);
+        }
+      });
     });
   });
 });

@@ -2,6 +2,7 @@
 """ Views index page """
 
 from api.v1.routes import app_routes
+from dotenv import load_dotenv
 from flask import jsonify
 from models import storage
 from models.Model import Customer
@@ -9,6 +10,8 @@ from models.Model import Admin
 from models.Model import Staff
 from models.Model import Books
 
+
+load_dotenv()
 
 classes = {
     "Customer": Customer,

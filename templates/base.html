@@ -21,15 +21,18 @@
                 </li>
                 <li><a href="/">Home</a></li>
 
-                <li class="BookMenu"><a href="">Books</a>
-                    <div class="Menu">
-                        <a href="#">Favorite Books</a>
-                        <a href="#">Borrowed Books</a>
-                    </div>
-                </li>
 
                 <li><a href="/about">About</a></li>
-                <li class="user-icon"><a href=""><i class="fa-solid fa-user"></i></a></li>
+                <li class="user-icon dropMenu"><a><i class="fa-solid fa-user"></i></a>
+                    <div class="Menu">
+                        {% if not authenticated %}
+                        <a href="/login">Login</a>
+                        {% endif %}
+                        <a href="logout">Logout</a>
+                        <a href="">Favorite Books</a>
+                        <a href="">Borrowed Books</a>
+                    </div>
+                </li>
             </ul>
         </nav>
     </header>
@@ -44,7 +47,7 @@
         <p>&copy; 2024 Libr</p>
     </footer>
 
-    
+
     <!-- Include any additional JavaScript files here -->
     <!-- Include Bootstrap JS if you're using it -->
 </body>

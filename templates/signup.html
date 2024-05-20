@@ -111,6 +111,9 @@
             box-shadow: rgba(0, 68, 255, 0.735) 0 1px 30px;
             transition-duration: .1s;
         }
+        form a{
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -134,6 +137,7 @@
         <label for="password">Password</label>
         <input type="password" placeholder="Password" id="password">
 
-        <button>Sign Up</button>
+        <button id="signup-btn">Sign Up</button>
+        <a href="/login">Already have an account ?</a>
     </form>
     {% endblock %}
