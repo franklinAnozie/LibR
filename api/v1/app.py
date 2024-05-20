@@ -1,14 +1,13 @@
 #!./new_env/bin/python3
 """ The app definition """
 
-from flask import Flask, jsonify, make_response
-from models import storage
 from api.v1.routes import app_routes
-from os import environ
-from flask_cors import CORS
 from dotenv import load_dotenv
-import os
-from flask import session
+from flask import Flask, jsonify, make_response, session
+from flask_cors import CORS
+from models import storage
+from os import environ, getenv
+
 
 load_dotenv()
 
@@ -16,7 +15,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = getenv('SECRET_KEY')
 app.register_blueprint(app_routes)
 
 
@@ -34,6 +33,6 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    host = environ.get("HBNB_API_HOST", "0.0.0.0")
-    port = int(environ.get("HBNB_API_PORT", 5000))
+    host = environ.get("LIBR_HOST", "0.0.0.0")
+    port = int(environ.get("LIBR_PORT", 5000))
     app.run(host=host, port=port, threaded=True, debug=True)
