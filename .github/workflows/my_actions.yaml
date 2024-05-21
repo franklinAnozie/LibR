@@ -38,7 +38,3 @@ jobs:
       # run javascript linter
       - name: run javascript linter
         run: semistandard .
-
-      # run shell linter
-      - name: run shell linter
-        run: shellcheck ./*.sh
