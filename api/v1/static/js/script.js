@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 $(document).ready(function () {
-  const apiUrl = 'http://localhost:5000/api/v1/books/';
+  const apiUrl = '/api/v1/books/';
 
   $.getJSON(apiUrl, function (data) {
     const books = data;
@@ -26,7 +26,7 @@ $(document).ready(function () {
       const bookId = $(this).data('book-id');
 
       // Fetch user ID from Flask endpoint
-      fetch('/get_user_id')
+      fetch('/app/get_user_id')
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch user ID');
@@ -38,7 +38,7 @@ $(document).ready(function () {
 
           // Make AJAX request to borrow the book
           $.ajax({
-            url: 'http://localhost:5000/api/v1/books/' + bookId + '/borrow/',
+            url: '/api/v1/books/' + bookId + '/borrow/',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ user_id: userId }),
@@ -65,7 +65,7 @@ $(document).ready(function () {
 
       // Send POST request to Flask route
       $.ajax({
-        url: '/login-post',
+        url: '/app/login-post',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ username, password }),
@@ -73,7 +73,7 @@ $(document).ready(function () {
           // Handle success response from Flask
           alert('You Logged in !');
           // Optionally, redirect to another page
-          window.location.href = '/';
+          window.location.href = '/app/';
         },
         error: function (xhr, status, error) {
           alert(`Error: ${xhr.responseText} ${status} ${error}`);
@@ -105,7 +105,7 @@ $(document).ready(function () {
       };
       // Send POST request to Flask route
       $.ajax({
-        url: '/signup',
+        url: '/app/signup',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(formData),
@@ -113,7 +113,7 @@ $(document).ready(function () {
           // Handle success response from Flask
           alert('Signup successful');
           // Optionally, redirect to another page
-          window.location.href = '/login'; // Redirect to login page after signup
+          window.location.href = '/app/login'; // Redirect to login page after signup
         },
         error: function (xhr, status, error) {
           // Handle error response from Flask

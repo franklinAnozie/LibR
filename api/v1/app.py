@@ -1,7 +1,7 @@
 #!./new_env/bin/python3
 """ The app definition """
 
-from api.v1.routes import app_routes
+from api.v1.routes import app_routes, frontend_routes
 from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response, session
 from flask_cors import CORS
@@ -16,6 +16,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.secret_key = getenv('SECRET_KEY')
+app.register_blueprint(frontend_routes)
 app.register_blueprint(app_routes)
 
 
@@ -28,7 +29,6 @@ def teardown_appcontext(exception):
 @app.errorhandler(404)
 def not_found(error):
     """ 404 error page """
-    print("Session from api/v1/app.py:", session)
     return make_response(jsonify({"error": "Not found"}), 404)
 
 
