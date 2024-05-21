@@ -95,27 +95,19 @@ def post_book():
 def borrow(book_id):
     """Borrow a book."""
     customer_id = request.json.get('user_id')
-    print("Customer ID:", customer_id)
     if not customer_id:
-        print("Customer ID is required.")
         abort(400, description="Customer ID is required.")
 
     book = storage.get(Books, book_id)
-    print("Book:", book)
     if not book:
-        print("Book not found.")
         abort(404, description="Book not found.")
 
     customer = storage.get(Customer, customer_id)
-    print("Customer:", customer)
     if not customer:
-        print("Customer not found.")
         abort(404, description="Customer not found.")
 
     # Borrow the book
     if customer.borrow_book(book_id):
-        print("Book borrowed successfully.")
         return jsonify({"message": "Book borrowed successfully."}), 200
     else:
-        print("Failed to borrow the book.")
         return jsonify({"message": "Failed to borrow the book."}), 400

@@ -88,13 +88,10 @@ class Customer(Users, Base):
             if specific_book is not None:
                 self.borrowed_books.append(specific_book)
                 self.save()
-                print("Book borrowed successfully!!")
                 return True
             else:
-                print("Error: Book not found!")
                 return False
         else:
-            print("Error: Can't borrow another book, Limit reached!!")
             return False
 
     def return_book(self, book_id):
@@ -110,16 +107,13 @@ class Customer(Users, Base):
             self.save()
             return self.fine
         else:
-            print("You don't owe any fines")
             return False
 
     def delete_account(self):
         if self.get_num_of_borrowed > 0:
-            print("Can't delete account, until books are returned!")
             return False
         else:
             self.delete()
-            print("account deleted successfully")
             return True
 
     def update_account(self, update_details):
@@ -165,10 +159,8 @@ class Staff(Users, Base):
                 specific_user.delete()
                 return True
             else:
-                print("Account can't be deleted, User borrowed a book")
                 return False
         else:
-            print("Error: Can't delete user!!")
             return False
 
     def fine_user(self, **user_details):
@@ -185,12 +177,10 @@ class Staff(Users, Base):
             all_borrowed = models.storage.all(CustomerBook)
             for each_book in all_borrowed.values():
                 if each_book.book_id == specific_book.id:
-                    print("Can't delete book, it's currently being borrowed")
                     return False
             specific_book.delete()
             return True
         else:
-            print("Book not found")
             return False
 
     def update_book(self, book_details):
@@ -223,12 +213,10 @@ class Admin(Staff):
         else:
             specific_user = models.storage.get(Customer, user_details["id"])
             if specific_user.get_num_of_borrowed() > 0:
-                print("Account can't be deleted, User borrowed a book")
                 return False
         if specific_user is not None:
             specific_user.delete()
         else:
-            print("Error: Can't delete user!!")
             return False
 
 
@@ -252,7 +240,6 @@ class Books(Model, Base):
 
     def delete_book(self):
         models.storage.delete(self)
-        print("book deleted successfully")
 
     def get_borrowed_by(self):
         return self.borrowed_by
