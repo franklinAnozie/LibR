@@ -1,20 +1,16 @@
 #!./new_env/bin/python3
+""" Views index page """
 
-from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify
-from flask import session, redirect, url_for
+from api.v1.routes import frontend_routes
+from flask import jsonify, render_template, session
+from flask import request, redirect, url_for
 from models import storage
 from models.Model import Customer
-from os import getenv
 import requests
 from uuid import uuid4
 
-load_dotenv()
-app = Flask(__name__)
-app.secret_key = getenv('SECRET_KEY')
 
-
-@app.route('/')
+@frontend_routes.route("/", methods=["GET"], strict_slashes=False)
 def home():
     authenticated = 'user_id' in session
     if authenticated:
@@ -23,21 +19,21 @@ def home():
         return render_template('login.html')
 
 
-@app.route('/login')
+@frontend_routes.route('/login')
 def login():
     if 'user_id' in session:
         # User is already authenticated, redirect to home page
-        return redirect(url_for('home'))
+        return redirect(url_for('frontend_routes.home'))
     return render_template('login.html')
 
 
-@app.route('/login-post', methods=['POST'])
+@frontend_routes.route('/login-post', methods=['POST'])
 def login_post():
     data = request.json
     username = data.get('username')
     password = data.get('password')
     # Query the database to retrieve the user with the specified username
-    response = requests.get('http://localhost:5000/api/v1/users')
+    response = requests.get('http://127.0.0.1:5000/api/v1/users')
     if response.status_code == 200:
         users = response.json()
         # Find the user with the specified username
@@ -62,19 +58,19 @@ def login_post():
     return jsonify({'message': 'Login successful'}), 200
 
 
-@app.route('/logout')
+@frontend_routes.route('/logout', methods=["GET"], strict_slashes=False)
 def logout():
     # Clear user session to log out
     session.pop('user_id', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('frontend_routes.home'))
 
 
-@app.route('/signup')
+@frontend_routes.route('/signup')
 def signup():
     return render_template('signup.html')
 
 
-@app.route('/signup', methods=['POST'])
+@frontend_routes.route('/signup', methods=['POST'])
 def signup_post():
     # Extract form data from the request
     data = request.json
@@ -105,21 +101,17 @@ def signup_post():
     storage.save()
 
     # Redirect the user to the login page
-    return redirect(url_for('login'))
+    return redirect(url_for('frontend_routes.login'))
 
 
-@app.route('/about')
+@frontend_routes.route('/about')
 def about():
     return render_template('about.html')
 
 
-@app.route('/get_user_id')
+@frontend_routes.route('/get_user_id')
 def get_user_id():
     if 'user_id' in session:
         return jsonify({'user_id': session['user_id']})
     else:
         return jsonify({'user_id': None})
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5001)

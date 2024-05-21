@@ -3,10 +3,13 @@
 from flask import Blueprint, session
 
 
-url_prefix = "/api/v1"
+api_prefix = "/api/v1"
+fe_prefix = "/app"
 
-app_routes = Blueprint("app_routes", __name__, url_prefix=url_prefix)
+app_routes = Blueprint("app_routes", __name__, url_prefix=api_prefix)
+frontend_routes = Blueprint("frontend_routes", __name__, url_prefix=fe_prefix)
 
-from api.v1.routes.index import *  # noqa: E402
-from api.v1.routes.users import *  # noqa: E402
 from api.v1.routes.books import *  # noqa: E402
+from api.v1.routes.index import *  # noqa: E402
+from api.v1.routes.root import *  # noqa: E402
+from api.v1.routes.users import *  # noqa: E402

@@ -10,7 +10,6 @@ from models.Model import Admin
 from models.Model import Staff
 from models.Model import Books
 
-
 load_dotenv()
 
 classes = {
