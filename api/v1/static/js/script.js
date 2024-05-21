@@ -26,7 +26,7 @@ $(document).ready(function () {
       const bookId = $(this).data('book-id');
 
       // Fetch user ID from Flask endpoint
-      fetch('/app/get_user_id')
+      fetch('/get_user_id')
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch user ID');
@@ -65,7 +65,7 @@ $(document).ready(function () {
 
       // Send POST request to Flask route
       $.ajax({
-        url: '/app/login-post',
+        url: '/login-post',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ username, password }),
@@ -73,7 +73,7 @@ $(document).ready(function () {
           // Handle success response from Flask
           alert('You Logged in !');
           // Optionally, redirect to another page
-          window.location.href = '/app/';
+          window.location.href = '/';
         },
         error: function (xhr, status, error) {
           alert(`Error: ${xhr.responseText} ${status} ${error}`);
@@ -105,7 +105,7 @@ $(document).ready(function () {
       };
       // Send POST request to Flask route
       $.ajax({
-        url: '/app/signup',
+        url: '/signup',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(formData),
@@ -113,7 +113,7 @@ $(document).ready(function () {
           // Handle success response from Flask
           alert('Signup successful');
           // Optionally, redirect to another page
-          window.location.href = '/app/login'; // Redirect to login page after signup
+          window.location.href = '/login'; // Redirect to login page after signup
         },
         error: function (xhr, status, error) {
           // Handle error response from Flask

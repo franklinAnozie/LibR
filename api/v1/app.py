@@ -34,4 +34,5 @@ def not_found(error):
 
 if __name__ == "__main__":
     host = environ.get("LIBR_HOST", "0.0.0.0")
-    app.run(host=host, threaded=True, debug=False)
+    port = environ.get("LIBR_PORT", 5000)
+    app.run(host=host, port=port, threaded=True, debug=False)

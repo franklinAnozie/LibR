@@ -19,16 +19,16 @@
                 <li class="logo">
                     <img width="125px" height="100px" src="../static/images/LibrLogo.png" alt="">
                 </li>
-                <li><a href="/app/">Home</a></li>
+                <li><a href="/">Home</a></li>
 
 
-                <li><a href="/app/about">About</a></li>
+                <li><a href="/about">About</a></li>
                 <li class="user-icon dropMenu"><a><i class="fa-solid fa-user"></i></a>
                     <div class="Menu">
                         {% if authenticated %}
-                        <a href="/app/logout">Logout</a>
+                        <a href="/logout">Logout</a>
                         {% else %}
-                        <a href="/app/login">Login</a>
+                        <a href="/login">Login</a>
                         {% endif %}
                         <a href="">Favorite Books</a>
                         <a href="">Borrowed Books</a>

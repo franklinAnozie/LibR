@@ -6,7 +6,6 @@ from flask import jsonify, render_template, session
 from flask import request, redirect, url_for
 from models import storage
 from models.Model import Customer
-import requests
 from uuid import uuid4
 
 
@@ -33,14 +32,13 @@ def login_post():
     username = data.get('username')
     password = data.get('password')
     # Query the database to retrieve the user with the specified username
-    response = requests.get('http://127.0.0.1:5000/api/v1/users')
-    if response.status_code == 200:
-        users = response.json()
+    response = storage.all(Customer)
+    if response is not None:
         # Find the user with the specified username
         user = None
-        for single_user in users:
-            if single_user.get('user_name') == username:
-                user = single_user
+        for value in response.values():
+            if value.__dict__["user_name"] == username:
+                user = value.__dict__
         if user:
             if user.get('password') == password:
                 # Authentication successful
